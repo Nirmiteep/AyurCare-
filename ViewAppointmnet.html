@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Doctor - View Appointments | Ayurcare</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        :root {
+            --bg-light: #f4f7f6;
+            --card-white: #ffffff;
+            --ayur-green: #017721;
+            --text-dark: #212529;
+            --border-color: #e0e0e0;
+        }
+
+        body { 
+            background-color: var(--bg-light); 
+            color: var(--text-dark); 
+            font-family: 'Inter', sans-serif; 
+        }
+
+        .navbar { 
+            background-color: var(--ayur-green); 
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+        
+        .card { 
+            background-color: var(--card-white); 
+            border: 1px solid var(--border-color); 
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05); 
+            border-radius: 12px;
+        }
+
+        .text-green { color: var(--ayur-green); }
+        .btn-green { 
+            background-color: var(--ayur-green); 
+            color: white; 
+            font-weight: 500; 
+            border: none; 
+            transition: 0.2s ease; 
+        }
+        .btn-green:hover { background-color: #015e1a; color: white; }
+        
+        .table th { background-color: #f8f9fa; color: var(--text-dark); border-bottom: 2px solid var(--ayur-green); }
+        .table-hover tbody tr:hover { background-color: #f1f8f3; }
+        
+        .badge-scheduled { background-color: #0d6efd; color: white; }
+        .badge-completed { background-color: var(--ayur-green); color: white; }
+        .badge-cancelled { background-color: #dc3545; color: white; }
+    </style>
+</head>
+<body>
+
+    <nav class="navbar navbar-dark mb-4 p-3">
+        <div class="container d-flex justify-content-between align-items-center">
+            <span class="navbar-brand fw-bold text-white" id="doctorGreeting">Doctor Portal</span>
+            <div>
+                <button onclick="window.location.href='DoctorDashboard.html'" class="btn btn-outline-light btn-sm me-2">Dashboard</button>
+                <button onclick="logout()" class="btn btn-danger btn-sm">Logout</button>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container pb-5">
+        <div class="card p-4 mb-5">
+            <h4 class="text-green mb-4">Upcoming & Pending Appointments</h4>
+            <div class="table-responsive">
+                <table class="table table-hover align-middle">
+                    <thead>
+                        <tr>
+                            <th>Patient Name</th>
+                            <th>Date</th>
+                            <th>Time</th>
+                            <th>Status</th>
+                            <th class="text-center">Manage Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="activeRecords">
+                        <tr><td colspan="5" class="text-center py-4">Loading active appointments...</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="card p-4">
+            <h4 class="text-secondary mb-4">Appointment History (Completed & Rejected)</h4>
+            <div class="table-responsive">
+                <table class="table table-hover align-middle">
+                    <thead>
+                        <tr>
+                            <th>Patient Name</th>
+                            <th>Date</th>
+                            <th>Time</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody id="historyRecords">
+                        <tr><td colspan="4" class="text-center py-4">Loading history...</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+<script>
+    // 1. Authenticate Doctor
+    const currentUser = JSON.parse(localStorage.getItem('user'));
+
+    function initUI() {
+        if (!currentUser || currentUser.role !== 'doctor') {
+            alert("Access denied. Please log in as a Doctor.");
+            window.location.href = "Login.html";
+            return;
+        }
+
+        const docName = currentUser.full_name || currentUser.name || "Doctor";
+        document.getElementById('doctorGreeting').innerText = `Dr. ${docName}'s Appointments`;
+        
+        loadAppointments();
+    }
+
+    // 2. Load Appointments from Simulated Database (localStorage)
+    function loadAppointments() {
+        const activeTbody = document.getElementById('activeRecords');
+        const historyTbody = document.getElementById('historyRecords');
+        
+        const allAppointments = JSON.parse(localStorage.getItem('ayur_appointments')) || [];
+        const myName = currentUser.full_name || currentUser.name;
+
+        // Filter appointments strictly for this doctor
+        const myAppointments = allAppointments.filter(app => app.doctor_name === myName);
+
+        // Separate into Active (Scheduled) and History (Completed/Cancelled)
+        const activeApps = myAppointments.filter(app => app.status === 'Scheduled');
+        const historyApps = myAppointments.filter(app => app.status !== 'Scheduled');
+
+        // Sort both by date
+        activeApps.sort((a, b) => new Date(a.app_date) - new Date(b.app_date));
+        historyApps.sort((a, b) => new Date(b.app_date) - new Date(a.app_date));
+
+        // Render Active Table
+        activeTbody.innerHTML = '';
+        if (activeApps.length === 0) {
+            activeTbody.innerHTML = '<tr><td colspan="5" class="text-center py-4 text-muted">No pending appointments.</td></tr>';
+        } else {
+            activeApps.forEach(app => {
+                activeTbody.innerHTML += `
+                    <tr>
+                        <td class="fw-bold text-dark">${app.patient_name}</td>
+                        <td>${app.app_date}</td>
+                        <td class="text-green fw-bold">${app.app_time}</td>
+                        <td><span class="badge badge-scheduled px-2 py-1">${app.status}</span></td>
+                        <td class="text-center">
+                            <button class="btn btn-sm btn-outline-primary me-1" onclick="rescheduleApp(${app.app_id}, '${app.app_time}')">Change Time</button>
+                            <button class="btn btn-sm btn-green me-1" onclick="updateStatus(${app.app_id}, 'Completed')">Accept/Complete</button>
+                            <button class="btn btn-sm btn-outline-danger" onclick="updateStatus(${app.app_id}, 'Cancelled')">Reject</button>
+                        </td>
+                    </tr>
+                `;
+            });
+        }
+
+        // Render History Table
+        historyTbody.innerHTML = '';
+        if (historyApps.length === 0) {
+            historyTbody.innerHTML = '<tr><td colspan="4" class="text-center py-4 text-muted">No appointment history.</td></tr>';
+        } else {
+            historyApps.forEach(app => {
+                const badgeClass = app.status === 'Completed' ? 'badge-completed' : 'badge-cancelled';
+                historyTbody.innerHTML += `
+                    <tr>
+                        <td class="fw-bold text-dark">${app.patient_name}</td>
+                        <td>${app.app_date}</td>
+                        <td>${app.app_time}</td>
+                        <td><span class="badge ${badgeClass} px-2 py-1">${app.status}</span></td>
+                    </tr>
+                `;
+            });
+        }
+    }
+
+    // 3. Reschedule Logic (Updates app_time)
+    function rescheduleApp(appId, currentTime) {
+        const newTime = prompt("Enter the new time for this appointment (e.g., 10:30 AM, 04:00 PM):", currentTime);
+        
+        if (newTime !== null && newTime.trim() !== "") {
+            let appointments = JSON.parse(localStorage.getItem('ayur_appointments')) || [];
+            const index = appointments.findIndex(a => a.app_id === appId);
+            
+            if (index !== -1) {
+                appointments[index].app_time = newTime;
+                localStorage.setItem('ayur_appointments', JSON.stringify(appointments));
+                alert(`Appointment rescheduled to ${newTime}. The patient will see this update.`);
+                loadAppointments();
+            }
+        }
+    }
+
+    // 4. Accept/Reject Logic (Updates MySQL ENUM status)
+    function updateStatus(appId, newStatus) {
+        const action = newStatus === 'Completed' ? 'mark this appointment as Completed/Accepted' : 'reject and cancel this appointment';
+        if (!confirm(`Are you sure you want to ${action}?`)) return;
+
+        let appointments = JSON.parse(localStorage.getItem('ayur_appointments')) || [];
+        const index = appointments.findIndex(a => a.app_id === appId);
+        
+        if (index !== -1) {
+            appointments[index].status = newStatus;
+            localStorage.setItem('ayur_appointments', JSON.stringify(appointments));
+            loadAppointments();
+        }
+    }
+
+    // 5. Logout
+    function logout() {
+        localStorage.removeItem('user');
+        window.location.href = "Login.html";
+    }
+
+    window.onload = initUI;
+</script>
+</body>
+</html>

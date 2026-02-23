@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Dashboard | Ayurcare</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --ayur-green: #2d5a27;
+            --ayur-dark: #1e3d1a;
+            --light-bg: #f8f9fa;
+            --card-shadow: 0 10px 25px rgba(0, 0, 0, 0.05);
+        }
+
+        body {
+            background-color: var(--light-bg);
+            font-family: 'Inter', sans-serif;
+            color: #333;
+        }
+
+        /* 1. Refined Navigation Bar */
+        .navbar {
+            background: white;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            padding: 15px 0;
+        }
+        .navbar-brand img {
+            height: 40px;
+            margin-right: 10px;
+        }
+        .nav-link {
+            font-weight: 600;
+            color: #555 !important;
+            margin: 0 10px;
+            transition: color 0.3s;
+        }
+        .nav-link:hover {
+            color: var(--ayur-green) !important;
+        }
+        .btn-logout {
+            background: #dc3545;
+            color: white !important;
+            border-radius: 8px;
+            padding: 5px 20px;
+        }
+
+        /* 2. Hero Section & Welcome */
+        .hero-section {
+            background: linear-gradient(135deg, var(--ayur-green) 0%, var(--ayur-dark) 100%);
+            color: white;
+            padding: 80px 0 120px 0;
+            text-align: center;
+        }
+        .hero-section h1 {
+            font-weight: 700;
+            font-size: 2.5rem;
+        }
+
+        /* 3. Overlapping Card Layout */
+        .dashboard-content {
+            margin-top: -60px;
+        }
+        .card {
+            border: none;
+            border-radius: 20px;
+            box-shadow: var(--card-shadow);
+            transition: transform 0.3s ease;
+            height: 100%;
+        }
+        .card:hover {
+            transform: translateY(-10px);
+        }
+        .icon-box {
+            font-size: 2rem;
+            color: var(--ayur-green);
+            margin-bottom: 15px;
+        }
+        .btn-action {
+            border-radius: 10px;
+            font-weight: 600;
+            padding: 10px 25px;
+        }
+        
+        /* --- UPDATED FOOTER STYLING --- */
+.footer { 
+    background-color: #111111; 
+    color: #e0e0e0; 
+    padding: 50px 0 20px; 
+    margin-top: auto; 
+}
+
+.footer h5 { 
+    color: #2b7714; /* Your requested theme green */
+    font-weight: 700; 
+    margin-bottom: 20px; 
+    letter-spacing: 0.5px;
+}
+
+/* Fixes the invisible dark text issue */
+.footer p, 
+.footer .text-muted { 
+    color: #cccccc !important; /* Forces a readable light grey */
+    line-height: 1.7;
+    font-weight: 400;
+}
+
+.footer a { 
+    color: #aaaaaa; 
+    text-decoration: none; 
+    transition: all 0.3s ease; 
+    display: block; 
+    margin-bottom: 10px; 
+    font-weight: 500;
+}
+
+.footer a:hover { 
+    color: #2b7714; 
+    padding-left: 6px; 
+}
+
+.footer-bottom { 
+    border-top: 1px solid #333333; 
+    padding-top: 20px; 
+    margin-top: 30px; 
+    text-align: center; 
+    font-size: 0.9rem; 
+    color: #888888 !important; 
+}
+        
+        </style>
+</head>
+<body>
+
+    <nav class="navbar navbar-expand-lg">
+        <div class="container">
+            <a class="navbar-brand" href="#">
+                <img src="image.png" alt="Logo">
+                <span class="fw-bold text-success">Ayurcare</span>
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto align-items-center">
+                    <li class="nav-item"><a class="nav-link" href="./Assesment.html">Assessment</a></li>
+                    <li class="nav-item"><a class="nav-link" href="./ViewProducts.html">Store</a></li>
+                    <li class="nav-item"><a class="nav-link" href="./ViewPrescriptions.html">Prescriptions</a></li>
+                    <li class="nav-item"><a class="nav-link" href="./Appointments.html">Appointments</a></li>
+                    <li class="nav-item ms-lg-3">
+                        <a class="nav-link btn-logout" href="#" onclick="logout()">Logout</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <header class="hero-section">
+        <div class="container">
+            <h1 id="welcomeText">Welcome, Guest</h1>
+            <p class="lead opacity-75">Your personalized Ayurvedic healing journey</p>
+        </div>
+    </header>
+
+    <div class="container dashboard-content">
+        <div class="row g-4 justify-content-center">
+            <div class="col-md-4">
+                <div class="card p-4 text-center">
+                    <div class="card-body">
+                        <h5 class="card-title fw-bold">Health Assessment</h5>
+                        <p class="text-muted">Analyze your Prakriti and Dosha balance.</p>
+                        <a href="./Assesment.html" class="btn btn-outline-success btn-action w-100">Start Test</a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-4">
+                <div class="card p-4 text-center">
+                    <div class="card-body">
+                        <h5 class="card-title fw-bold">My Prescriptions</h5>
+                        <p class="text-muted">View your treatment plans and Diet charts.</p>
+                        <a href="./ViewPrescriptions.html" class="btn btn-outline-success btn-action w-100">View History</a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-4">
+                <div class="card p-4 text-center">
+                    <div class="card-body">
+                        <h5 class="card-title fw-bold">Ayurvedic Store</h5>
+                        <p class="text-muted">Order herbal supplements and tonics.</p>
+                        <div class="d-flex gap-2">
+                            <a href="./ViewProducts.html" class="btn btn-success btn-action flex-grow-1">Shop</a>
+                            <a href="Cart.html" id="cartBtn" class="btn btn-outline-dark w-50 fw-bold">Cart</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+<footer class="footer mt-5">
+    <div class="container">
+        <div class="row g-4">
+            <div class="col-md-4">
+                <h5>Ayurcare</h5>
+                <p class="text-muted small pe-4" style="color: #ffffff;">Bridging ancient Ayurvedic wisdom with modern digital healthcare. Your journey to holistic wellness starts here.</p>
+            </div>
+            <div class="col-md-4">
+                <h5>Quick Links</h5>
+                <a href="Appointments.html">Book an Appointment</a>
+                <a href="ViewProducts.html">Ayurvedic Pharmacy</a>
+                <a href="./Assesment.html">Determine Your Prakriti</a>
+            </div>
+            <div class="col-md-4">
+                <h5>Contact Us</h5>
+                <p class="text-muted small mb-1" style="color: #ffffff;">📍 123 Wellness Avenue, Pune, India</p>
+                <p class="text-muted small mb-1"  style="color: #ffffff;">📞 +91 98765 43210</p>
+                <p class="text-muted small" style="color: #ffffff;">✉️ support@ayurcare.com</p>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            &copy; 2026 Ayurcare Digital Healthcare System. All rights reserved.
+        </div>
+    </div>
+</footer>
+    <script>
+        function updateCartCount() {
+    // Read the cart array from local storage
+    const cartItems = JSON.parse(localStorage.getItem('ayur_cart')) || [];
+    // Update the button text with the length of the array
+    document.getElementById('cartBtn').innerText = `Cart (${cartItems.length})`;
+}
+        // Use user session from Login page
+        const user = JSON.parse(localStorage.getItem('user'));
+        
+        if (user) {
+            document.getElementById('welcomeText').innerText = `Welcome, ${user.full_name}`;
+        } else {
+            window.location.href = "Login.html"; // Guard redirect
+        }
+
+        function logout() {
+            localStorage.removeItem('user');
+            window.location.href = "Login.html";
+        }
+
+    </script>
+
+
+</body>
+</html>

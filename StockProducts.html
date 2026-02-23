@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AyurCare | Store Management</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body { background-color: #f4f7f6; font-family: 'Inter', sans-serif; }
+        .bg-ayur { background-color: #198754; }
+        .product-card { border-radius: 12px; border: none; overflow: hidden; height: 100%; box-shadow: 0 4px 6px rgba(0,0,0,0.05); }
+        .img-container { height: 180px; background: #e9ecef; display: flex; align-items: center; justify-content: center; overflow: hidden; }
+        .img-container img { width: 100%; height: 100%; object-fit: cover; }
+    </style>
+</head>
+<body>
+
+<nav class="navbar navbar-dark bg-ayur mb-4 shadow-sm">
+    <div class="container d-flex justify-content-between align-items-center">
+        <span class="navbar-brand fw-bold">Ayurcare | <small>INVENTORY MANAGEMENT</small></span>
+        <div>
+            <a href="DoctorDashboard.html" class="btn btn-outline-light btn-sm me-2">Dashboard</a>
+        </div>
+    </div>
+</nav>
+
+<div class="container py-4">
+    <div class="card p-4 mb-5 shadow-sm border-0" style="border-top: 5px solid #198754 !important;">
+        <h4 class="text-success mb-3">Add New Medicine to Database</h4>
+        <form id="stockForm" class="row g-3">
+            <div class="col-md-6">
+                <label class="form-label fw-bold">Product Name</label>
+                <input type="text" id="pName" class="form-control" placeholder="e.g., Ashwagandha Churna" required>
+            </div>
+            <div class="col-md-3">
+                <label class="form-label fw-bold">Price (₹)</label>
+                <input type="number" id="pPrice" class="form-control" placeholder="0.00" required>
+            </div>
+            <div class="col-md-3">
+                <label class="form-label fw-bold">Initial Stock Qty</label>
+                <input type="number" id="pStock" class="form-control" placeholder="e.g., 50" required>
+            </div>
+            <div class="col-12">
+                <label class="form-label fw-bold">Description</label>
+                <textarea id="pDesc" class="form-control" rows="2" placeholder="Describe the benefits and usage..." required></textarea>
+            </div>
+            <div class="col-md-9">
+                <label class="form-label fw-bold">Image URL</label>
+                <input type="text" id="pImg" class="form-control" placeholder="https://example.com/image.jpg">
+            </div>
+            <div class="col-md-3 d-flex align-items-end">
+                <button type="submit" class="btn btn-success w-100 py-2 fw-bold">Add to Store</button>
+            </div>
+        </form>
+    </div>
+
+    <h4 class="mb-3 text-secondary">Current Active Inventory</h4>
+    <div id="productDisplay" class="row row-cols-1 row-cols-md-3 row-cols-lg-4 g-4 pb-5">
+        </div>
+</div>
+
+<script>
+    const sessionUser = JSON.parse(localStorage.getItem('user'));
+
+    function initDoctorStore() {
+        if (!sessionUser || sessionUser.role !== 'doctor') {
+            window.location.href = "Login.html";
+            return;
+        }
+        loadProducts();
+    }
+
+    // Load products using the UNIFIED key: ayur_products
+    function loadProducts() {
+        const products = JSON.parse(localStorage.getItem('ayur_products')) || [];
+        const container = document.getElementById('productDisplay');
+        
+        if (products.length === 0) {
+            container.innerHTML = `<div class="col-12 text-muted">No products in inventory. Add some above.</div>`;
+            return;
+        }
+
+        container.innerHTML = '';
+        products.forEach((item, index) => {
+            const card = `
+                <div class="col">
+                    <div class="card product-card p-3">
+                        <div class="img-container mb-3 rounded">
+                            <img src="${item.image_url || 'https://via.placeholder.com/200?text=No+Image'}" alt="Product">
+                        </div>
+                        <h5 class="text-truncate" title="${item.name}">${item.name}</h5>
+                        <p class="small text-muted text-truncate" title="${item.description}">${item.description}</p>
+                        <div class="d-flex justify-content-between align-items-center mb-3">
+                            <span class="h5 mb-0 text-success fw-bold">₹${item.price}</span>
+                            <span class="badge ${item.stock_qty > 0 ? 'bg-secondary' : 'bg-danger'}">Stock: ${item.stock_qty}</span>
+                        </div>
+                        <button class="btn btn-outline-danger btn-sm w-100 fw-bold" onclick="deleteItem(${index})">Delete Item</button>
+                    </div>
+                </div>`;
+            container.innerHTML += card;
+        });
+    }
+
+    // Save product to the UNIFIED key: ayur_products
+    document.getElementById('stockForm').addEventListener('submit', function(e) {
+        e.preventDefault();
+        
+        const newProduct = {
+            id: Date.now(),
+            name: document.getElementById('pName').value,
+            price: document.getElementById('pPrice').value,
+            stock_qty: parseInt(document.getElementById('pStock').value),
+            description: document.getElementById('pDesc').value,
+            image_url: document.getElementById('pImg').value
+        };
+
+        let currentStock = JSON.parse(localStorage.getItem('ayur_products')) || [];
+        currentStock.push(newProduct);
+        localStorage.setItem('ayur_products', JSON.stringify(currentStock));
+        
+        alert(`${newProduct.name} successfully added to the patient storefront!`);
+        this.reset();
+        loadProducts();
+    });
+
+    // Delete product
+    function deleteItem(idx) {
+        if(!confirm("Are you sure you want to remove this product from the store?")) return;
+        
+        let currentStock = JSON.parse(localStorage.getItem('ayur_products'));
+        currentStock.splice(idx, 1);
+        localStorage.setItem('ayur_products', JSON.stringify(currentStock));
+        loadProducts();
+    }
+
+    window.onload = initDoctorStore;
+</script>
+
+</body>
+</html>
