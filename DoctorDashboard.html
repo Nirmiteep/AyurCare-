@@ -29,10 +29,39 @@
             box-shadow: 2px 0 10px rgba(0,0,0,0.1);
             z-index: 10;
         }
-        .sidebar h3 { 
-            font-weight: 800; 
-            letter-spacing: 0.5px; 
+        .logo { 
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            text-align: left;
+        }
+        .logo img {
+            width: 55px;
+            height: 48px;
+           
+        
+            border-radius: 150px;
+            background: rgba(255,255,255,0.05);
+            
+            box-shadow: 0 8px 20px rgba(0,0,0,0.3); 
+        }
+        .logo-text {
+            display: flex;
+            flex-direction: column;
+            line-height: 1.1;
+        }
+        .logo-title {
+            font-weight: 800;
+            letter-spacing: 0.5px;
             color: var(--ayur-green);
+            font-size: 1.45rem;
+        }
+        .logo-tagline {
+            font-size: 0.8rem;
+            color: #9ca3af;
+            text-transform: uppercase;
+            letter-spacing: 0.3rem;
         }
         .sidebar a { 
             color: #9ca3af; 
@@ -103,12 +132,19 @@
     <div class="row g-0 flex-grow-1">
         
         <nav class="col-md-3 col-lg-2 sidebar">
-            <h3 class="mb-4 text-center">Ayurcare</h3>
+            
+            <div class="logo mb-4">
+                <img src="image.png" alt="Ayurcare leaf mark">
+                <div class="logo-text">
+                    <span class="logo-title">Ayurcare</span>
+                    
+                </div>
+            </div>
             <a href="./Appointments.html">📅 Appointments</a>
             <a href="./Prescription.html">📝 Prescriptions</a>
-            <a href="./StockProducts.html">📦 Medicine Stock</a>
+            <a href="./StockProducts.html">🌿 Medicine Stock</a>
             <hr class="border-secondary mt-4 mb-4">
-            <a href="#" onclick="logout()" class="text-danger">🚪 Logout</a>
+            <a href="#" onclick="logout()" class="text-danger"> Logout</a>
         </nav>
 
         <main class="col-md-9 col-lg-10 d-flex flex-column p-0">
@@ -150,7 +186,7 @@
                     <div class="card-body p-4">
                         <h5 class="card-title">Quick Actions</h5>
                         <div class="d-flex gap-3">
-                            <a href="./Appointments.html" class="btn btn-primary shadow-sm">Check Schedule</a>
+                            <a href="./ViewAppointmnet.html" class="btn btn-primary shadow-sm">Check Schedule</a>
                             <a href="./Prescription.html" class="btn btn-success shadow-sm">Write New Prescription</a>
                         </div>
                     </div>
