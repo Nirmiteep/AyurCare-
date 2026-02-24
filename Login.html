@@ -31,16 +31,10 @@ document.getElementById("loginForm").addEventListener("submit", function(e) {
     const emailInput = document.getElementById("userEmail").value.trim();
     const passInput = document.getElementById("userPass").value;
 
-    /** * LOGIC FOR DATABASE CONNECTION:
-     * In a real MySQL setup, you would use fetch() to send these credentials 
-     * to a PHP/NodeJS script that queries: 
-     * SELECT * FROM users WHERE email = emailInput AND password = passInput;
-     */
-
-    // FOR NOW: We simulate the check using the 'ayur_users' we registered in MySQL
+    
     const users = JSON.parse(localStorage.getItem('ayur_users')) || [];
 
-    // Find the user in our simulated 'users' table
+  
     const foundUser = users.find(u => 
         u.email === emailInput && u.password === passInput
     );
@@ -50,7 +44,6 @@ document.getElementById("loginForm").addEventListener("submit", function(e) {
         return;
     }
 
-    // Save the user object to the session so the dashboard can greet them by 'full_name'
     localStorage.setItem('user', JSON.stringify(foundUser));
 
 

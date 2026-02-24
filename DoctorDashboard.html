@@ -8,7 +8,7 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <style>
         :root {
-            --ayur-green: #2b7714; /* Requested Theme Color */
+            --ayur-green: #2b7714;
             --ayur-green-dark: #1f570e;
             --sidebar-bg: #111827;
             --bg-light: #f3f6f4;
@@ -87,14 +87,13 @@
         #doctorNameHeader { font-weight: 800; color: #111827; }
         .badge.bg-success { background-color: var(--ayur-green) !important; font-size: 0.85rem; padding: 8px 12px; border-radius: 6px; }
 
-        /* Footer Styling (Perfectly Aligned) */
+        /* Footer Styling */
         .footer { background-color: #ffffff; color: #4b5563; padding: 40px 0 20px; border-top: 1px solid #e5e7eb; margin-top: auto; }
         .footer h5 { color: var(--ayur-green); font-weight: 700; margin-bottom: 15px; font-size: 1.1rem; }
         .footer a { color: #6b7280; text-decoration: none; transition: 0.2s; display: block; margin-bottom: 8px; font-weight: 500; }
         .footer a:hover { color: var(--ayur-green); padding-left: 4px; }
         .footer-bottom { border-top: 1px solid #f3f4f6; padding-top: 20px; margin-top: 30px; text-align: center; font-size: 0.85rem; color: #9ca3af; font-weight: 500; }
 
-        /* Dynamic Appointment Request Items */
         .border-primary { border-color: var(--ayur-green) !important; }
     </style>
 </head>
@@ -104,7 +103,7 @@
     <div class="row g-0 flex-grow-1">
         
         <nav class="col-md-3 col-lg-2 sidebar">
-            
+            <h3 class="mb-4 text-center">Ayurcare</h3>
             <a href="./Appointments.html">📅 Appointments</a>
             <a href="./Prescription.html">📝 Prescriptions</a>
             <a href="./StockProducts.html">📦 Medicine Stock</a>
@@ -194,81 +193,130 @@
 </div>
 
 <script>
-    // 1. Get logged-in user
-    const currentUser = JSON.parse(localStorage.getItem('user'));
+    // 1. Get logged-in user securely
+    let currentUserData = localStorage.getItem('user');
+    let currentUser = null;
     
+    if (currentUserData) {
+        currentUser = JSON.parse(currentUserData);
+    }
+
     // 2. Check Auth
     if (!currentUser || currentUser.role !== 'doctor') {
         window.location.href = "Login.html";
     }
 
+    // 3. Start Dashboard
     function initDashboard() {
-        document.getElementById('doctorNameHeader').innerText = "Welcome, Dr. " + currentUser.full_name;
+        let myName = currentUser.full_name || currentUser.name || "Doctor";
+        document.getElementById('doctorNameHeader').innerText = "Welcome, Dr. " + myName;
+        
         updateStats();
         renderAppointmentRequests();
     }
 
-    // 3. Dynamic Stats Logic
+    // 4. Update the numbers in the colored boxes
     function updateStats() {
-        const appointments = JSON.parse(localStorage.getItem('ayur_appointments')) || [];
-        const prescriptions = JSON.parse(localStorage.getItem('ayur_prescriptions')) || [];
-        const inventory = JSON.parse(localStorage.getItem('ayur_inventory')) || [];
+        let appointments = JSON.parse(localStorage.getItem('ayur_appointments')) || [];
+        let prescriptions = JSON.parse(localStorage.getItem('ayur_prescriptions')) || [];
+        let inventory = JSON.parse(localStorage.getItem('ayur_inventory')) || [];
 
-        // Count logic
-        const myAppointments = appointments.filter(a => a.doctor_id === currentUser.user_id).length;
-        const myPrescriptions = prescriptions.filter(p => p.doctor_id === currentUser.user_id).length;
-        const lowStock = inventory.filter(i => i.stock_qty < 5).length;
+        let myName = currentUser.full_name || currentUser.name;
 
-        // Injecting the numbers directly into the H3 IDs
-        document.getElementById('apptCount').innerText = myAppointments;
-        document.getElementById('prescCount').innerText = myPrescriptions;
-        document.getElementById('stockCount').innerText = lowStock;
-    }
-
-    // 4. Render Appointments
-    function renderAppointmentRequests() {
-        const appointments = JSON.parse(localStorage.getItem('ayur_appointments')) || [];
-        const requestContainer = document.getElementById('appointmentRequests');
-        requestContainer.innerHTML = '';
-
-        const pending = appointments.filter(app => app.status === 'Scheduled');
-
-        if(pending.length === 0) {
-            requestContainer.innerHTML = '<p class="text-muted">No pending requests.</p>';
-            return;
+        // Count only MY appointments
+        let myApptCount = 0;
+        for (let i = 0; i < appointments.length; i++) {
+            if (appointments[i].doctor_name === myName) {
+                myApptCount++;
+            }
         }
 
-        pending.forEach((app) => {
-            const div = document.createElement('div');
-            div.className = 'card mb-3 p-3 border-start border-primary border-4 shadow-sm';
-            div.innerHTML = `
-                <div class="d-flex justify-content-between align-items-center">
-                    <div>
-                        <strong class="text-dark fs-5">Patient ID: ${app.patient_id}</strong><br>
-                        <small class="text-muted fw-bold">${app.app_date} at ${app.app_time}</small>
-                    </div>
-                    <div class="btn-group">
-                        <button class="btn btn-sm btn-success fw-bold px-3" onclick="updateAppStatus(${app.app_id}, 'Completed')">Accept</button>
-                        <button class="btn btn-sm btn-danger fw-bold px-3" onclick="updateAppStatus(${app.app_id}, 'Cancelled')">Reject</button>
-                    </div>
-                </div>
-            `;
-            requestContainer.appendChild(div);
-        });
+        // Count only MY prescriptions
+        let myPrescCount = 0;
+        for (let i = 0; i < prescriptions.length; i++) {
+            if (prescriptions[i].doctor_name === myName) {
+                myPrescCount++;
+            }
+        }
+
+        // Check for low stock (this is general for the clinic)
+        let lowStockCount = 0;
+        for (let i = 0; i < inventory.length; i++) {
+            if (inventory[i].stock_qty < 5) {
+                lowStockCount++;
+            }
+        }
+
+        document.getElementById('apptCount').innerText = myApptCount;
+        document.getElementById('prescCount').innerText = myPrescCount;
+        document.getElementById('stockCount').innerText = lowStockCount;
     }
 
-    function updateAppStatus(id, newStatus) {
+    // 5. Render only the requests meant for THIS doctor
+    function renderAppointmentRequests() {
         let appointments = JSON.parse(localStorage.getItem('ayur_appointments')) || [];
-        const index = appointments.findIndex(a => a.app_id === id);
-        if(index > -1) {
-            appointments[index].status = newStatus;
+        let requestContainer = document.getElementById('appointmentRequests');
+        
+        requestContainer.innerHTML = '';
+        let myName = currentUser.full_name || currentUser.name;
+        let pendingCount = 0;
+
+        // Loop through all appointments
+        for (let i = 0; i < appointments.length; i++) {
+            let app = appointments[i];
+
+            // The fix! Check if it is Scheduled AND if the doctor's name matches me
+            if (app.status === 'Scheduled' && app.doctor_name === myName) {
+                pendingCount++;
+                
+                // Get the patient name properly
+                let pName = app.patient_name || app.patient_id || "Unknown Patient";
+
+                let div = document.createElement('div');
+                div.className = 'card mb-3 p-3 border-start border-primary border-4 shadow-sm';
+                
+                let cardHtml = '<div class="d-flex justify-content-between align-items-center">' +
+                    '<div>' +
+                        '<strong class="text-dark fs-5">Patient: ' + pName + '</strong><br>' +
+                        '<small class="text-muted fw-bold">' + app.app_date + ' at ' + app.app_time + '</small>' +
+                    '</div>' +
+                    '<div class="btn-group">' +
+                        '<button class="btn btn-sm btn-success fw-bold px-3" onclick="updateAppStatus(' + app.app_id + ', \'Completed\')">Accept</button>' +
+                        '<button class="btn btn-sm btn-danger fw-bold px-3" onclick="updateAppStatus(' + app.app_id + ', \'Cancelled\')">Reject</button>' +
+                    '</div>' +
+                '</div>';
+
+                div.innerHTML = cardHtml;
+                requestContainer.appendChild(div);
+            }
+        }
+
+        // If no pending appointments for me, show a message
+        if (pendingCount === 0) {
+            requestContainer.innerHTML = '<p class="text-muted">No pending requests at this time.</p>';
+        }
+    }
+
+    // 6. Accept or Reject appointments
+    function updateAppStatus(id, newStatus) {
+        let savedData = localStorage.getItem('ayur_appointments');
+        if (savedData) {
+            let appointments = JSON.parse(savedData);
+            
+            for (let i = 0; i < appointments.length; i++) {
+                if (appointments[i].app_id === id) {
+                    appointments[i].status = newStatus;
+                    break;
+                }
+            }
+            
             localStorage.setItem('ayur_appointments', JSON.stringify(appointments));
             updateStats();
             renderAppointmentRequests();
         }
     }
 
-    // 5. The Missing Logout Function
+    // 7. Logout
     function logout() {
         localStorage.removeItem('user');
         window.location.href = "Login.html";

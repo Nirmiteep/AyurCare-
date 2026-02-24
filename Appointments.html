@@ -6,37 +6,104 @@
     <title>Ayurcare - Appointments</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <style>
-        :root {
-            --bg-dark: #ffffff;
-            --card-dark: #ffffff;
-            --ayur-green:  #017721;
-            --text-light: #e0e0e0;
-            --input-bg: #ffffff;
-            color: black;
-        }
+      :root {
+        --ayur-green: #017721;
+        --bg-light: #f5f7fa;
+        --card-bg: #ffffff;
+        --text-dark: #212529;
+        --border-light: #ced4da;
+    }
 
-        body { 
-            background-color: var(--bg-dark); 
-            color: var(--text-light); 
-            font-family: 'Inter', sans-serif; 
-        }
+    /* Base */
+    body { 
+        background-color: var(--bg-light);
+        color: var(--text-dark);
+        font-family: 'Inter', sans-serif;
+    }
 
-        .navbar { background-color: var(--card-dark); border-bottom: 2px solid var(--ayur-green); }
-        .card { background-color: var(--card-dark); border: none; box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5); }
-        .form-label { color: var(--text-light); font-weight: 500; }
-        .form-control, .form-select { background-color: var(--input-bg); color: white; border: 1px solid #444; }
-        .form-control:focus, .form-select:focus { background-color: var(--input-bg); color: white; border-color: var(--ayur-green); box-shadow: 0 0 5px rgba(0, 230, 64, 0.4); }
-        .btn-green { background-color: var(--ayur-green); color: rgb(255, 255, 255); font-weight: 600; border: none; transition: 0.2s ease; }
-        .btn-green:hover { background-color: #017721; color: rgb(255, 255, 255); }
-        .text-green { color: var(--ayur-green); }
-        .table { color: var(--text-light); border-color: #333; }
-        .table-dark { background-color: #111; }
-        .table-hover tbody tr:hover { color: white; background-color: #2a2a2a; }
+    /* Navbar */
+    .navbar { 
+        background-color: var(--ayur-green) !important;
+    }
+
+    /* Cards */
+    .card { 
+        background-color: var(--card-bg);
+        border: none;
+        border-radius: 16px;
+        box-shadow: 0 6px 18px rgba(0, 0, 0, 0.08);
+    }
+
+    /* Labels */
+    .form-label { 
+        color: var(--ayur-green);
+        font-weight: 600;
+    }
+
+    /* Inputs */
+    .form-control, 
+    .form-select { 
+        background-color: #ffffff;
+        color: #212529;
+        border: 1px solid var(--border-light);
+        border-radius: 8px;
+    }
+
+    .form-control::placeholder {
+        color: #6c757d;
+    }
+
+    .form-control:focus, 
+    .form-select:focus { 
+        background-color: #ffffff;
+        color: #212529;
+        border-color: var(--ayur-green);
+        box-shadow: 0 0 0 0.2rem rgba(1, 119, 33, 0.15);
+    }
+
+    /* Buttons */
+    .btn-green { 
+        background-color: var(--ayur-green); 
+        color: #ffffff; 
+        font-weight: 600; 
+        border: none; 
+        border-radius: 8px;
+        transition: 0.2s ease;
+    }
+
+    .btn-green:hover { 
+        background-color: #026b1f; 
+        color: #ffffff; 
+    }
+
+    /* Table */
+    .table { 
+        color: var(--text-dark);
+    }
+
+    .table thead {
+        background-color: var(--ayur-green);
+        color: #ffffff;
+    }
+
+    .table-hover tbody tr:hover { 
+        background-color: #f1f3f5; 
+    }
+
+    /* Badges */
+    .badge {
+        padding: 6px 10px;
+        font-size: 0.75rem;
+    }
+
+    .text-muted {
+        color: #6c757d !important;
+    }
     </style>
 </head>
 <body>
 
-    <nav class="navbar navbar-dark mb-4 p-3 shadow-sm" style="background-color: var(--ayur-green);">
+    <nav class="navbar navbar-dark mb-4 p-3 shadow-sm">
         <div class="container d-flex justify-content-between align-items-center">
             <span class="navbar-brand fw-bold text-white" id="userGreeting">Loading...</span>
             <div>
@@ -48,27 +115,22 @@
 
     <div class="container pb-5">
         <div class="card p-4 mb-4 rounded-4">
-            <h4 class="text-green mb-4">Schedule Appointment</h4>
+            <h4 class="text-green mb-4" style="color: #017721;">Schedule Appointment</h4>
             <form id="appointmentForm" class="row g-3">
                 <div class="col-md-4">
-                    <label id="dynamicLabel" class="form-label" style="color: #017721;">Select User</label>
+                    <label id="dynamicLabel" class="form-label">Select User</label>
                     <select id="userSelect" class="form-select" required>
                         <option value="">-- Choose --</option>
                     </select>
                 </div>
                 <div class="col-md-3">
-                    <label class="form-label" style="color: #017721;">Date</label>
+                    <label class="form-label">Date</label>
                     <input type="date" id="appDate" class="form-control" required>
                 </div>
                 <div class="col-md-3">
-                    <label class="form-label" style="color: #017721;">Time</label>
+                    <label class="form-label">Time</label>
                     <select id="appTime" class="form-select" required>
-                        <option value="10:00 AM">10:00 AM</option>
-                        <option value="11:00 AM">11:00 AM</option>
-                        <option value="12:00 PM">12:00 PM</option>
-                        <option value="02:00 PM">02:00 PM</option>
-                        <option value="03:00 PM">03:00 PM</option>
-                        <option value="04:00 PM">04:00 PM</option>
+                        <option value="">-- Select Date First --</option>
                     </select>
                 </div>
                 <div class="col-md-2 d-flex align-items-end">
@@ -78,15 +140,15 @@
         </div>
 
         <div class="card p-4 rounded-4">
-            <h4 class="text-green mb-4">Appointment Records</h4>
+            <h4 class="text-green mb-4" style="color: #017721;">Appointment Records</h4>
             <div class="table-responsive">
                 <table class="table table-hover align-middle">
                     <thead class="table-dark">
                         <tr>
-                            <th class="text-green">Date & Time</th>
-                            <th class="text-green" id="tableCounterpartHeader">Doctor/Patient</th>
-                            <th class="text-green">Status</th>
-                            <th class="text-green">Actions</th>
+                            <th>Date & Time</th>
+                            <th id="tableCounterpartHeader">Doctor/Patient</th>
+                            <th>Status</th>
+                            <th>Actions</th>
                         </tr>
                     </thead>
                     <tbody id="tableRecords">
@@ -98,22 +160,45 @@
     </div>
 
 <script>
-    // 1. Get logged in user
-    const currentUser = JSON.parse(localStorage.getItem('user'));
+    // Get the logged-in user right away
+    let currentUserData = localStorage.getItem('user');
+    let currentUser = null;
+    if (currentUserData) {
+        currentUser = JSON.parse(currentUserData);
+    }
 
+    // Clinic hours setup
+    let clinicTimes = [
+        ["10:00 AM", 10],
+        ["11:00 AM", 11],
+        ["12:00 PM", 12],
+        ["02:00 PM", 14],
+        ["03:00 PM", 15],
+        ["04:00 PM", 16]
+    ];
+
+    // Main setup function that runs when the page loads
     function initUI() {
         if (!currentUser) {
             window.location.href = "Login.html";
             return;
         }
 
-        // Display name (Using full_name or name depending on what you saved during registration)
-        const displayName = currentUser.full_name || currentUser.name || "User";
-        document.getElementById('userGreeting').innerText = `Welcome, ${displayName}`;
-        
-        const label = document.getElementById('dynamicLabel');
-        const header = document.getElementById('tableCounterpartHeader');
-        
+        // Set the welcome text
+        let displayName = currentUser.full_name || currentUser.name || "User";
+        document.getElementById('userGreeting').innerText = "Welcome, " + displayName;
+
+        // Set the minimum date to today so they can't pick yesterday
+        let todayObj = new Date();
+        let todayString = todayObj.toISOString().split("T")[0];
+        let dateInput = document.getElementById("appDate");
+        dateInput.setAttribute("min", todayString);
+        dateInput.value = todayString;
+
+        // Change labels based on if it's a doctor or patient
+        let label = document.getElementById('dynamicLabel');
+        let header = document.getElementById('tableCounterpartHeader');
+
         if (currentUser.role === 'doctor') {
             label.innerText = "Select Patient";
             header.innerText = "Patient Name";
@@ -123,58 +208,187 @@
             header.innerText = "Doctor Name";
             populateDropdown('doctor');
         }
-        
+
+        // Run the time slot generator and load the table
+        updateTimeSlots();
         loadAppointments();
     }
 
-    // 2. Populate Dropdown from localStorage 'ayur_users'
+    // Fill the first dropdown with users from localStorage
     function populateDropdown(targetRole) {
-        const select = document.getElementById('userSelect');
-        const allUsers = JSON.parse(localStorage.getItem('ayur_users')) || [];
+        let select = document.getElementById('userSelect');
+        let allUsersData = localStorage.getItem('ayur_users');
+        let allUsers = [];
         
-        const filteredUsers = allUsers.filter(u => u.role === targetRole);
+        if (allUsersData) {
+            allUsers = JSON.parse(allUsersData);
+        }
         
         select.innerHTML = '<option value="">-- Choose --</option>';
-        if(filteredUsers.length === 0) {
-            select.innerHTML += `<option value="" disabled>No ${targetRole}s registered yet.</option>`;
-        } else {
-            filteredUsers.forEach(u => {
-                // We use the name as the value for easy tracking in pure frontend
-                const name = u.full_name || u.name;
-                select.innerHTML += `<option value="${name}">${name}</option>`;
-            });
+        
+        let foundUsers = 0;
+        
+        for (let i = 0; i < allUsers.length; i++) {
+            let u = allUsers[i];
+            if (u.role === targetRole) {
+                let name = u.full_name || u.name;
+                let newOption = document.createElement("option");
+                newOption.value = name;
+                newOption.text = name;
+                select.appendChild(newOption);
+                foundUsers++;
+            }
+        }
+
+        if (foundUsers === 0) {
+            select.innerHTML = '<option value="" disabled>No ' + targetRole + 's registered yet.</option>';
         }
     }
 
-    // 3. Submit Appointment to localStorage
+    // This handles the dynamic time dropdown
+    function updateTimeSlots() {
+        let timeSelect = document.getElementById('appTime');
+        let dateInput = document.getElementById('appDate').value;
+        let selectedUser = document.getElementById('userSelect').value;
+        
+        // Clear old options
+        timeSelect.innerHTML = '<option value="">-- Choose Time --</option>';
+        
+        if (dateInput === "") {
+            timeSelect.innerHTML = '<option value="">-- Select Date First --</option>';
+            timeSelect.disabled = true;
+            return; 
+        }
+
+        // Figure out whose schedule we are checking
+        let targetDoctor = "";
+        if (currentUser.role === 'doctor') {
+            targetDoctor = currentUser.full_name || currentUser.name;
+        } else {
+            targetDoctor = selectedUser;
+        }
+
+        // Get appointments to check for booked slots
+        let savedData = localStorage.getItem('ayur_appointments');
+        let allAppointments = [];
+        if (savedData !== null) {
+            allAppointments = JSON.parse(savedData);
+        }
+
+        let today = new Date();
+        let selectedDate = new Date(dateInput);
+        
+        // Check if selected date is today
+        let isToday = false;
+        if (selectedDate.toDateString() === today.toDateString()) {
+            isToday = true;
+        }
+
+        let currentHour = today.getHours();
+        let slotsAdded = 0;
+
+        for (let i = 0; i < clinicTimes.length; i++) {
+            let timeLabel = clinicTimes[i][0];
+            let timeHour = clinicTimes[i][1];
+
+            let isTimeValid = false;
+
+            // Only allow times that haven't passed if the date is today
+            if (isToday) {
+                if (timeHour > currentHour) {
+                    isTimeValid = true;
+                }
+            } else {
+                isTimeValid = true;
+            }
+
+            // Check if someone already booked this specific slot
+            let isAlreadyBooked = false;
+            if (targetDoctor !== "") {
+                for (let j = 0; j < allAppointments.length; j++) {
+                    let existingApp = allAppointments[j];
+                    
+                    if (existingApp.doctor_name === targetDoctor && 
+                        existingApp.app_date === dateInput && 
+                        existingApp.app_time === timeLabel && 
+                        existingApp.status !== 'Cancelled') {
+                        isAlreadyBooked = true;
+                    }
+                }
+            }
+
+            // Add the option to the dropdown
+            if (isTimeValid) {
+                let newOption = document.createElement("option");
+                newOption.value = timeLabel;
+                
+                if (isAlreadyBooked) {
+                    newOption.text = timeLabel + " (Booked)";
+                    newOption.disabled = true;
+                } else {
+                    newOption.text = timeLabel;
+                }
+                
+                timeSelect.appendChild(newOption);
+                slotsAdded++;
+            }
+        }
+
+        if (slotsAdded === 0) {
+            timeSelect.innerHTML = '<option value="">No slots available today</option>';
+            timeSelect.disabled = true;
+        } else {
+            timeSelect.disabled = false;
+        }
+    }
+
+    // Listeners to trigger the time update
+    document.getElementById('appDate').addEventListener('change', updateTimeSlots);
+    document.getElementById('userSelect').addEventListener('change', updateTimeSlots);
+
+    // Handle the form submit
     document.getElementById('appointmentForm').onsubmit = function(e) {
         e.preventDefault();
-        
-        const selectedUser = document.getElementById('userSelect').value;
-        const isDoctor = currentUser.role === 'doctor';
-        const myName = currentUser.full_name || currentUser.name;
 
-        const newAppointment = {
+        let selectedUser = document.getElementById('userSelect').value;
+        let selectedDate = document.getElementById('appDate').value;
+        let selectedTime = document.getElementById('appTime').value;
+
+        let isDoctor = (currentUser.role === 'doctor');
+        let myName = currentUser.full_name || currentUser.name;
+
+        let doctorName = isDoctor ? myName : selectedUser;
+        let patientName = isDoctor ? selectedUser : myName;
+
+        let newAppointment = {
             app_id: Date.now(),
-            patient_name: isDoctor ? selectedUser : myName,
-            doctor_name: isDoctor ? myName : selectedUser,
-            app_date: document.getElementById('appDate').value,
-            app_time: document.getElementById('appTime').value,
+            patient_name: patientName,
+            doctor_name: doctorName,
+            app_date: selectedDate,
+            app_time: selectedTime,
             status: 'Scheduled'
         };
 
-        let appointments = JSON.parse(localStorage.getItem('ayur_appointments')) || [];
+        let savedData = localStorage.getItem('ayur_appointments');
+        let appointments = [];
+        if (savedData) {
+            appointments = JSON.parse(savedData);
+        }
         
-        // Simple overlap check
-        const isOverlap = appointments.some(app => 
-            app.doctor_name === newAppointment.doctor_name && 
-            app.app_date === newAppointment.app_date && 
-            app.app_time === newAppointment.app_time &&
-            app.status !== 'Cancelled'
-        );
+        // Final safety check for overlap just in case
+        let isOverlap = false;
+        for (let i = 0; i < appointments.length; i++) {
+            let app = appointments[i];
+            if (app.doctor_name === doctorName && 
+                app.app_date === selectedDate && 
+                app.app_time === selectedTime &&
+                app.status !== 'Cancelled') {
+                isOverlap = true;
+            }
+        }
 
         if (isOverlap) {
-            alert("This time slot is already booked for this doctor!");
+            alert("Sorry, this time slot was just booked by someone else!");
             return;
         }
 
@@ -182,20 +396,36 @@
         localStorage.setItem('ayur_appointments', JSON.stringify(appointments));
         
         alert("Appointment successfully scheduled!");
-        this.reset();
+        
+        // Reset the form but keep today's date
+        document.getElementById('appointmentForm').reset();
+        let todayObj = new Date();
+        document.getElementById('appDate').value = todayObj.toISOString().split("T")[0];
+        
+        updateTimeSlots();
         loadAppointments();
     };
 
-    // 4. Load Appointments from localStorage
+    // Load table data
     function loadAppointments() {
-        const tbody = document.getElementById('tableRecords');
-        const allAppointments = JSON.parse(localStorage.getItem('ayur_appointments')) || [];
-        const myName = currentUser.full_name || currentUser.name;
+        let tbody = document.getElementById('tableRecords');
+        let savedData = localStorage.getItem('ayur_appointments');
+        let allAppointments = [];
+        
+        if (savedData) {
+            allAppointments = JSON.parse(savedData);
+        }
 
-        // Filter appointments where I am either the doctor or the patient
-        const myAppointments = allAppointments.filter(app => 
-            app.patient_name === myName || app.doctor_name === myName
-        );
+        let myName = currentUser.full_name || currentUser.name;
+        let myAppointments = [];
+
+        // Find only my appointments using a simple loop
+        for (let i = 0; i < allAppointments.length; i++) {
+            let app = allAppointments[i];
+            if (app.patient_name === myName || app.doctor_name === myName) {
+                myAppointments.push(app);
+            }
+        }
 
         tbody.innerHTML = '';
         
@@ -204,60 +434,78 @@
             return;
         }
 
-        // Sort by date (newest first)
-        myAppointments.sort((a, b) => new Date(b.app_date) - new Date(a.app_date));
+        // Sort them so the newest dates are at the top
+        myAppointments.sort(function(a, b) {
+            let dateA = new Date(a.app_date);
+            let dateB = new Date(b.app_date);
+            return dateB - dateA;
+        });
 
-        myAppointments.forEach(app => {
-            const counterpartName = currentUser.role === 'doctor' ? app.patient_name : app.doctor_name;
+        // Build the table rows
+        for (let i = 0; i < myAppointments.length; i++) {
+            let app = myAppointments[i];
+            let counterpartName = (currentUser.role === 'doctor') ? app.patient_name : app.doctor_name;
             
             let badgeClass = 'bg-secondary';
-            if (app.status === 'Scheduled') badgeClass = 'bg-primary';
-            if (app.status === 'Completed') badgeClass = 'bg-success text-dark';
-            if (app.status === 'Cancelled') badgeClass = 'bg-danger';
+            if (app.status === 'Scheduled') { badgeClass = 'bg-primary'; }
+            if (app.status === 'Completed') { badgeClass = 'bg-success text-dark'; }
+            if (app.status === 'Cancelled') { badgeClass = 'bg-danger'; }
 
-            tbody.innerHTML += `
-                <tr>
-                    <td>
-                        <div class="fw-bold">${app.app_date}</div>
-                        <small class="text-muted">${app.app_time}</small>
-                    </td>
-                    <td class="fw-bold">${counterpartName}</td>
-                    <td><span class="badge ${badgeClass} px-2 py-1">${app.status}</span></td>
-                    <td>
-                        ${app.status === 'Scheduled' ? 
-                        `<button class="btn btn-outline-danger btn-sm" onclick="cancelApp(${app.app_id})">Cancel</button>` 
-                        : '<span class="text-muted">-</span>'}
-                    </td>
-                </tr>
-            `;
-        });
-    }
+            let actionHtml = '<span class="text-muted">-</span>';
+            if (app.status === 'Scheduled') {
+                actionHtml = '<button class="btn btn-outline-danger btn-sm" onclick="cancelApp(' + app.app_id + ')">Cancel</button>';
+            }
 
-    // 5. Cancel Appointment
-    function cancelApp(appId) {
-        if (!confirm("Are you sure you want to cancel this appointment?")) return;
-        
-        let appointments = JSON.parse(localStorage.getItem('ayur_appointments')) || [];
-        const index = appointments.findIndex(a => a.app_id === appId);
-        
-        if (index !== -1) {
-            appointments[index].status = 'Cancelled';
-            localStorage.setItem('ayur_appointments', JSON.stringify(appointments));
-            loadAppointments();
+            let rowHtml = '<tr>' +
+                '<td>' +
+                    '<div class="fw-bold">' + app.app_date + '</div>' +
+                    '<small class="text-muted">' + app.app_time + '</small>' +
+                '</td>' +
+                '<td class="fw-bold">' + counterpartName + '</td>' +
+                '<td><span class="badge ' + badgeClass + ' px-2 py-1">' + app.status + '</span></td>' +
+                '<td>' + actionHtml + '</td>' +
+            '</tr>';
+
+            tbody.innerHTML += rowHtml;
         }
     }
 
-    // 6. Navigation Controls
+    function cancelApp(appId) {
+        if (!confirm("Are you sure you want to cancel this appointment?")) {
+            return;
+        }
+        
+        let savedData = localStorage.getItem('ayur_appointments');
+        if (savedData) {
+            let appointments = JSON.parse(savedData);
+            
+            for (let i = 0; i < appointments.length; i++) {
+                if (appointments[i].app_id === appId) {
+                    appointments[i].status = 'Cancelled';
+                    break; // Stop looking once we found it
+                }
+            }
+            
+            localStorage.setItem('ayur_appointments', JSON.stringify(appointments));
+            loadAppointments();
+            updateTimeSlots(); // Refresh dropdown in case they cancelled for today
+        }
+    }
+
     function logout() {
         localStorage.removeItem('user');
         window.location.href = "Login.html";
     }
 
     function goBack() {
-        if (currentUser.role === 'doctor') window.location.href = "DoctorDashboard.html";
-        else window.location.href = "UserDashboard.html";
+        if (currentUser.role === 'doctor') {
+            window.location.href = "DoctorDashboard.html";
+        } else {
+            window.location.href = "UserDashboard.html";
+        }
     }
 
+    // Start everything up
     window.onload = initUI;
 </script>
 </body>
